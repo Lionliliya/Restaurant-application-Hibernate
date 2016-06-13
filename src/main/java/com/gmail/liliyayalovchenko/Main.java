@@ -570,15 +570,14 @@ public class Main {
             showAllDishNames();
             System.out.println("Enter name of dish to add to order, to stop - enter twice 'f'");
             List<Dish> dishForOrder = new ArrayList<>();
-            String next1;
-            String next2;
+            String name;
+
             while (true) {
-                next1 = sc.next();
-                next2 = sc.next();
-                if ("f".equals(next1)) break;
-                String dishName= next1 + " " + next2;
-                System.out.println("You entered " + dishName);
-                dishForOrder.add(dishController.getDishByName(dishName));
+                name = sc.next();
+
+                if ("f".equals(name)) break;
+                System.out.println("You entered " + name);
+                dishForOrder.add(dishController.getDishByName(name));
             }
             order.setDishList(dishForOrder);
             orderController.saveOrder(order);
@@ -600,11 +599,11 @@ public class Main {
             } else {
                 orderStatus = OrderStatus.closed;
             }
-            orders = orderController.getOpenOrClosedOrder(orderStatus);
-            orders.forEach(System.out::println);
+            orderController.printOpenOrClosedOrders(orderStatus);
 
         } catch (RuntimeException e) {
-            LOGGER.error("No orders with such status!");
+            LOGGER.error("No orders with such status! " + e);
+            System.out.println("can not add this dish to order");
         }
     }
 
@@ -628,7 +627,10 @@ public class Main {
         System.out.println("Enter number of order to delete");
         showOpenedOrdersNumb();
         try {
-            orderController.deleteOrder(sc.nextInt());
+
+            int orderNumber1 = sc.nextInt();
+            readyMealController.removeReadyMeal(orderNumber1);
+            orderController.deleteOrder(orderNumber1);
         } catch (RuntimeException ex) {
             LOGGER.error("Cannot find order by this order number " + ex);
         }
@@ -683,16 +685,18 @@ public class Main {
             employee = employeeController.getEmployeeByName(firstName, secondName);
             readyMeal.setEmployeeId(employee);
             List<Order> openOrders = orderController.getOpenOrClosedOrder(OrderStatus.opened);
+            if (openOrders.size() > 0) {
 
-            for (Order openOrder : openOrders) {
-                System.out.println("order_id " + openOrder.getId() + " ");
+                for (Order openOrder : openOrders) {
+                    System.out.println("order_id " + openOrder.getId() + " ");
+                }
+                System.out.println("Select order id");
+                readyMeal.setOrderId(orderController.getOrderById(sc.nextInt()));
+                readyMeal.setMealDate(new java.sql.Date(new Date(System.currentTimeMillis()).getTime()));
+                readyMealController.addReadyMeal(readyMeal);
+            } else {
+                LOGGER.info("No open orders. Cant save ready meal");
             }
-
-            System.out.println("Select order id");
-            readyMeal.setOrderId(orderController.getOrderById(sc.nextInt()));
-            readyMeal.setMealDate(new java.sql.Date(new Date(System.currentTimeMillis()).getTime()));
-            readyMealController.addReadyMeal(readyMeal);
-
         } catch (RuntimeException ex) {
             LOGGER.error("Wrong input!!!Try again!");
         }

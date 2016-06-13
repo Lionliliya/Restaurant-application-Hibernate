@@ -33,7 +33,7 @@ public class Order {
     @Column(name = "status")
     private OrderStatus status;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "ORDER_DISH",
                joinColumns = @JoinColumn(name = "order_id"),
                inverseJoinColumns = @JoinColumn(name = "dish_id"))
@@ -125,14 +125,30 @@ public class Order {
 
     @Override
     public String toString() {
+
         return "Order{" +
                 "id=" + id +
                 ", orderNumber=" + orderNumber +
-                ", employeeId=" + employeeId +
+                ", employeeId=" + employeeId.getSecondName() + " " + employeeId.getFirstName() +
                 ", tableNumber=" + tableNumber +
                 ", orderDate=" + orderDate +
                 ", status='" + status + '\'' +
-                ", dishList=" + dishList +
+                ", dishList=" + printDishNames() +
                 '}';
+    }
+
+    private String printDishNames() {
+        StringBuilder allDishInOrder = new StringBuilder();
+        allDishInOrder.append("[ ");
+
+        for (Dish dish : dishList) {
+            allDishInOrder.append(dish.getName()).append(", ");
+
+        }
+
+        allDishInOrder.trimToSize();
+        allDishInOrder.append(" ]");
+
+        return allDishInOrder.toString();
     }
 }

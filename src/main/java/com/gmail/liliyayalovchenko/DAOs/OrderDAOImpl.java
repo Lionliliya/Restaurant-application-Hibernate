@@ -32,6 +32,7 @@ public class OrderDAOImpl implements OrderDAO {
     public void addDishToOpenOrder(Dish dish, int orderNumber) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("select o from Order o where o.orderNumber =:orderNumber");
+        query.setParameter("orderNumber", orderNumber);
         Order order = (Order) query.getResultList().get(0);
         order.addDishToOrder(dish);
         session.update(order);
@@ -41,7 +42,8 @@ public class OrderDAOImpl implements OrderDAO {
     @Transactional(propagation = Propagation.MANDATORY)
     public void deleteOrder(int orderNumber) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("select o from Order o where o.orderNumber like :orderNumber");
+        Query query = session.createQuery("select o from Order o where o.orderNumber =:orderNumber");
+        query.setParameter("orderNumber", orderNumber);
         Order order = (Order) query.getResultList().get(0);
         session.delete(order);
     }
@@ -61,10 +63,11 @@ public class OrderDAOImpl implements OrderDAO {
     @Transactional(propagation = Propagation.MANDATORY)
     public List<Order> getOpenOrClosedOrder(OrderStatus orderStatus) {
         Session session = sessionFactory.getCurrentSession();
-        Query query = session.createQuery("select o from Order o where o.status like :status");
+        Query query = session.createQuery("select o from Order o where o.status =:status");
         query.setParameter("status", orderStatus);
         return  (List<Order>)query.getResultList();
     }
+
 
     @Override
     public Order getOrderById(int i) {

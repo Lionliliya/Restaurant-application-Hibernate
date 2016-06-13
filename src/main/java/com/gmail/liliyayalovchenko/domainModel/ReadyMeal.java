@@ -18,15 +18,15 @@ public class ReadyMeal {
     @Column(name = "dish_numb")
     private int dishNumber;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dish_id")
     private Dish dishId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employeeId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order orderId;
 
@@ -72,9 +72,9 @@ public class ReadyMeal {
         return "ReadyMeal{" +
                 "id=" + id +
                 ", dishNumber=" + dishNumber +
-                ", dishId=" + dishId +
-                ", employeeId=" + employeeId +
-                ", orderId=" + orderId +
+                ", dishId=" + dishId.getName() +
+                ", employeeId=" + employeeId.getFirstName() + " " + employeeId.getSecondName() +
+                ", orderId=" + orderId.getOrderNumber() +
                 ", mealDate=" + mealDate +
                 '}';
     }

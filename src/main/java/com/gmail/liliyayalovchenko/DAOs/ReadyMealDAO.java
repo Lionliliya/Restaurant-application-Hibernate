@@ -9,4 +9,6 @@ public interface ReadyMealDAO {
     public List<ReadyMeal> getAllReadyMeals();
 
     public void addReadyMeal(ReadyMeal meal);
+
+    public void removeReadyMeal(int orderNumber);
 }

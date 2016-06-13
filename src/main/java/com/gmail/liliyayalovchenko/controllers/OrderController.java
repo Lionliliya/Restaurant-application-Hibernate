@@ -29,6 +29,8 @@ public class OrderController {
         return orderDAO.findAll();
     }
 
+
+
     @Transactional
     public void addDishToOpenOrder(Dish dish, int orderNumber) {
         orderDAO.addDishToOpenOrder(dish, orderNumber);
@@ -47,6 +49,12 @@ public class OrderController {
     @Transactional
     public List<Order> getOpenOrClosedOrder(OrderStatus orderStatus) {
         return orderDAO.getOpenOrClosedOrder(orderStatus);
+    }
+
+    @Transactional
+    public void printOpenOrClosedOrders(OrderStatus orderStatus) {
+        getOpenOrClosedOrder(orderStatus).forEach(System.out::println);
+
     }
 
     @Transactional

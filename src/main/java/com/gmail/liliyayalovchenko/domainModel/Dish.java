@@ -28,7 +28,7 @@ public class Dish {
     @Column(name = "weight")
     private int weight;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "DISH_INGTREDIENTS",
             joinColumns = @JoinColumn(name = "dish_id"),
             inverseJoinColumns = @JoinColumn(name = "ingred_id"))

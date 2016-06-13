@@ -20,7 +20,14 @@ public class ReadyMealController {
         readyMealDAO.addReadyMeal(meal);
     }
 
+    @Transactional
+    public void removeReadyMeal(int orderNumber1) {
+        readyMealDAO.removeReadyMeal(orderNumber1);
+    }
+
     public void setReadyMealDAO(ReadyMealDAO readyMealDAO) {
         this.readyMealDAO = readyMealDAO;
     }
+
+
 }
