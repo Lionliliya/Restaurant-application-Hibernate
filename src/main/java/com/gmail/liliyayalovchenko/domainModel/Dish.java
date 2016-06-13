@@ -28,7 +28,7 @@ public class Dish {
     @Column(name = "weight")
     private int weight;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "DISH_INGTREDIENTS",
             joinColumns = @JoinColumn(name = "dish_id"),
             inverseJoinColumns = @JoinColumn(name = "ingred_id"))
@@ -36,15 +36,15 @@ public class Dish {
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name = "menu_id")
-    private Menu menuId;
+    private Menu menu;
 
-    public Dish(String name, DishCategory dishCategory, double price, int weight, List<Ingredient> ingredients, Menu menuId) {
+    public Dish(String name, DishCategory dishCategory, double price, int weight, List<Ingredient> ingredients, Menu menu) {
         this.name = name;
         this.dishCategory = dishCategory;
         this.price = price;
         this.weight = weight;
         this.ingredients = ingredients;
-        this.menuId = menuId;
+        this.menu = menu;
     }
 
     public Dish() {}
@@ -83,6 +83,26 @@ public class Dish {
         return name;
     }
 
+    public DishCategory getDishCategory() {
+        return dishCategory;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public Menu getMenu() {
+        return menu;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -114,18 +134,28 @@ public class Dish {
 
     @Override
     public String toString() {
-        return "Dish{" +
+       return "Dish{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", dishCategory=" + dishCategory +
                 ", price=" + price +
                 ", weight=" + weight +
-                ", ingredients=" + ingredients +
-                ", menuId=" + menuId +
+                ", ingredients=" + printIngredientNames() +
+                ", menu=" + menu.getName() +
                 '}';
     }
 
-    public void setMenuId(Menu menuId) {
-        this.menuId = menuId;
+    private String printIngredientNames() {
+        StringBuilder inrgredientsPrint = new StringBuilder();
+        inrgredientsPrint.append("[");
+        for (Ingredient ingredient : ingredients) {
+            inrgredientsPrint.append(ingredient.getName()).append(", ");
+        }
+        inrgredientsPrint.append(" ]");
+        return inrgredientsPrint.toString();
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 }

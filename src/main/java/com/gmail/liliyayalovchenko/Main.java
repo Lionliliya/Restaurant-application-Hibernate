@@ -124,8 +124,7 @@ public class Main {
      * Starts private methods for dish page **/
     private void getAllDishes() {
         try {
-            List<Dish> dishList = dishController.getAllDishes();
-            dishList.forEach(System.out::println);
+            dishController.printAllDishes();
         } catch (RuntimeException ex) {
             LOGGER.error("Cannot get all dishes " + ex);
             System.out.println("Cannot get all dishes ");

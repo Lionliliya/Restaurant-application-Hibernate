@@ -28,6 +28,14 @@ public class DishController {
     }
 
     @Transactional
+    public void printAllDishes() {
+        for (Dish dish : getAllDishes()) {
+            System.out.println(dish);
+        }
+
+    }
+
+    @Transactional
     public Dish getDishByName(String dishName) {
         return  dishDAO.getDishByName(dishName);
     }

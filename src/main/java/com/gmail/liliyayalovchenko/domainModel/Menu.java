@@ -18,7 +18,7 @@ public class Menu {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="menuId")
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="menu")
     private List<Dish> dishList;
 
     public Menu(List<Dish> dishList, String name) {
@@ -30,6 +30,7 @@ public class Menu {
 
     public void addDishToMenu(Dish dish) {
         dishList.add(dish);
+        dish.setMenu(this);
     }
 
     public int getId() {
@@ -56,13 +57,27 @@ public class Menu {
         this.dishList = dishList;
     }
 
+
+
     @Override
     public String toString() {
+        printDishList();
+
         return "Menu{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", dishList=" + dishList +
+                ", dishList=" + printDishList() +
                 '}';
+    }
+
+    private String printDishList() {
+        StringBuilder dishPrint = new StringBuilder();
+        dishPrint.append("[ ");
+        for (Dish dish : dishList) {
+            dishPrint.append(dish.getName()).append(", ");
+        }
+        dishPrint.append(" ]");
+        return dishPrint.toString();
     }
 
     @Override
