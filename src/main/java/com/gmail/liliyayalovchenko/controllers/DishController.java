@@ -1,7 +1,7 @@
 package com.gmail.liliyayalovchenko.controllers;
 
-import com.gmail.liliyayalovchenko.DAOs.DishDAO;
-import com.gmail.liliyayalovchenko.domainModel.Dish;
+import com.gmail.liliyayalovchenko.dao.DishDAO;
+import com.gmail.liliyayalovchenko.domain.Dish;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;

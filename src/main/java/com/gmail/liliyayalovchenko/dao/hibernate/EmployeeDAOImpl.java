@@ -1,6 +1,7 @@
-package com.gmail.liliyayalovchenko.DAOs;
+package com.gmail.liliyayalovchenko.dao.hibernate;
 
-import com.gmail.liliyayalovchenko.domainModel.Employee;
+import com.gmail.liliyayalovchenko.dao.EmployeeDAO;
+import com.gmail.liliyayalovchenko.domain.Employee;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Propagation;

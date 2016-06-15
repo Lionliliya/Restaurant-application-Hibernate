@@ -1,8 +1,8 @@
 package com.gmail.liliyayalovchenko.controllers;
 
-import com.gmail.liliyayalovchenko.DAOs.MenuDAO;
-import com.gmail.liliyayalovchenko.domainModel.Dish;
-import com.gmail.liliyayalovchenko.domainModel.Menu;
+import com.gmail.liliyayalovchenko.dao.MenuDAO;
+import com.gmail.liliyayalovchenko.domain.Dish;
+import com.gmail.liliyayalovchenko.domain.Menu;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -45,6 +45,17 @@ public class MenuController {
     @Transactional
     public void showAllMenus() {
         menuDAO.showAllMenus();
+    }
+
+    @Transactional
+    public void printMenuNames() {
+        menuDAO.showAllMenuNames();
+    }
+
+
+    @Transactional
+    public List<Menu> getAllMenus() {
+        return menuDAO.getAllMenu();
     }
 
     public void setMenuDAO(MenuDAO menuDAO) {

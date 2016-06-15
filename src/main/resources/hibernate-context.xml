@@ -24,7 +24,7 @@
 
        <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
               <property name="dataSource" ref="comboPooledDataSource"/>
-              <property name="packagesToScan" value="com.gmail.liliyayalovchenko.domainModel"/>
+              <property name="packagesToScan" value="com.gmail.liliyayalovchenko.domain"/>
               <property name="hibernateProperties">
                      <value>
                             hibernate.dialect=org.hibernate.dialect.MySQL5Dialect

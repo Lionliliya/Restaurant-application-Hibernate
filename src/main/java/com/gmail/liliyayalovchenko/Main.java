@@ -1,7 +1,7 @@
 package com.gmail.liliyayalovchenko;
 
 import com.gmail.liliyayalovchenko.controllers.*;
-import com.gmail.liliyayalovchenko.domainModel.*;
+import com.gmail.liliyayalovchenko.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -21,6 +21,9 @@ public class Main {
     private WarehouseController warehouseController;
     private ReadyMealController readyMealController;
     private int orderNumber;
+
+
+
     private boolean stopApp;
 
     public static void main(String[] args) {
@@ -31,7 +34,7 @@ public class Main {
 
     private void start() {
 
-        orderNumber = 1002;
+        orderNumber = orderController.getLastOrder() + 1;
         startApplication();
         Scanner sc = new Scanner(System.in);
         String selection = null;
@@ -140,7 +143,8 @@ public class Main {
             dish = dishController.getDishByName(name);
             System.out.println(dish);
         } catch (RuntimeException e) {
-            LOGGER.error("Cant get dish by this name");
+            e.printStackTrace();
+            LOGGER.error("Cant get dish by this name " + e);
             System.out.println("dish with such name does not exist");
         }
     }
@@ -198,6 +202,7 @@ public class Main {
             LOGGER.error("Error wile parsing " + ex);
             System.out.println("Wrong input");
         }
+        ingredientController.getAllIngredients().forEach(System.out::println);
         System.out.println("Enter ingredients. Then enter - f");
         List<Ingredient> ingredientList = new ArrayList<>();
         try {
@@ -208,6 +213,9 @@ public class Main {
                 ingredientList.add(ingredientByName);
             }
             dish.setIngredients(ingredientList);
+            System.out.println("Enter name Of menu");
+            menuController.printMenuNames();
+            dish.setMenu(menuController.getMenuByName(sc.next()));
             dishController.createDish(dish);
         } catch (RuntimeException ex) {
             LOGGER.error("Cannot add dish " + ex);
@@ -411,7 +419,7 @@ public class Main {
     private void addNewMenue(Scanner sc) {
         System.out.println("Enter name of new Menu");
         String nameMenu = sc.next();
-        //showAllDishNames();
+        menuController.printMenuNames();
         System.out.println("Enter dish name to add to menu. To finish enter - 'f'");
         List<Dish> dishList = new ArrayList<>();
         String dishName;
@@ -430,7 +438,7 @@ public class Main {
     }
 
     private void removeMenu(Scanner sc) {
-        menuController.showAllMenus();
+        menuController.printMenuNames();
         System.out.println("Enter name of menu to delete");
         try {
             Menu menu = menuController.getMenuByName(sc.next());
@@ -441,6 +449,7 @@ public class Main {
     }
 
     private void getMenuByName(Scanner sc) {
+        menuController.printMenuNames();
         System.out.println("Enter name of menu to see");
         try {
             Menu menu = menuController.getMenuByName(sc.next());
@@ -478,9 +487,8 @@ public class Main {
         try {
             Menu menu = menuController.getMenuByName(sc.next());
             showAllDishNames();
-            Dish dish;
-
-            dish = dishController.getDishByName(sc.next());
+            System.out.println("Enter dish name to add to menu");
+            Dish dish = dishController.getDishByName(sc.next());
             menuController.addDishToMenu(menu.getId(), dish);
         } catch (RuntimeException ex) {
             LOGGER.error("Cannot gat dish or menu " + ex);

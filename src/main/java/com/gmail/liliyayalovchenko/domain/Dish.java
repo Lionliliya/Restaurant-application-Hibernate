@@ -1,4 +1,4 @@
-package com.gmail.liliyayalovchenko.domainModel;
+package com.gmail.liliyayalovchenko.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -28,13 +28,13 @@ public class Dish {
     @Column(name = "weight")
     private int weight;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "DISH_INGTREDIENTS",
             joinColumns = @JoinColumn(name = "dish_id"),
             inverseJoinColumns = @JoinColumn(name = "ingred_id"))
     private List<Ingredient> ingredients;
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
@@ -114,6 +114,7 @@ public class Dish {
         if (weight != dish.weight) return false;
         if (dishCategory != dish.dishCategory) return false;
         if (ingredients != null ? !ingredients.equals(dish.ingredients) : dish.ingredients != null) return false;
+        if (menu != null ? !menu.equals(dish.menu) : dish.menu != null) return false;
         if (name != null ? !name.equals(dish.name) : dish.name != null) return false;
 
         return true;
@@ -129,6 +130,7 @@ public class Dish {
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + weight;
         result = 31 * result + (ingredients != null ? ingredients.hashCode() : 0);
+        result = 31 * result + (menu != null ? menu.hashCode() : 0);
         return result;
     }
 
@@ -157,5 +159,6 @@ public class Dish {
 
     public void setMenu(Menu menu) {
         this.menu = menu;
+
     }
 }

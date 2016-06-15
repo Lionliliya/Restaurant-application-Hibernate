@@ -16,7 +16,7 @@
               <property name="readyMealController" ref="readyMealController"/>
        </bean>
 
-       <bean class="com.gmail.liliyayalovchenko.DAOs.EmployeeDAOImpl" id="employeeDAO">
+       <bean class="com.gmail.liliyayalovchenko.dao.hibernate.EmployeeDAOImpl" id="employeeDAO">
               <property name="sessionFactory" ref="sessionFactory"/>
        </bean>
 
@@ -24,7 +24,7 @@
               <property name="employeeDAO" ref="employeeDAO"/>
        </bean>
 
-       <bean class="com.gmail.liliyayalovchenko.DAOs.DishDAOImpl" id="dishDAO">
+       <bean class="com.gmail.liliyayalovchenko.dao.hibernate.DishDAOImpl" id="dishDAO">
               <property name="sessionFactory" ref="sessionFactory"/>
        </bean>
 
@@ -32,7 +32,7 @@
               <property name="dishDAO" ref="dishDAO"/>
        </bean>
 
-       <bean class="com.gmail.liliyayalovchenko.DAOs.OrderDAOImpl" id="orderDAO">
+       <bean class="com.gmail.liliyayalovchenko.dao.hibernate.OrderDAOImpl" id="orderDAO">
               <property name="sessionFactory" ref="sessionFactory"/>
        </bean>
 
@@ -40,7 +40,7 @@
               <property name="orderDAO" ref="orderDAO"/>
        </bean>
 
-       <bean class="com.gmail.liliyayalovchenko.DAOs.IngredientDAOImpl" id="ingredientDAO">
+       <bean class="com.gmail.liliyayalovchenko.dao.hibernate.IngredientDAOImpl" id="ingredientDAO">
               <property name="sessionFactory" ref="sessionFactory"/>
        </bean>
 
@@ -48,7 +48,7 @@
               <property name="ingredientDAO" ref="ingredientDAO"/>
        </bean>
 
-       <bean class="com.gmail.liliyayalovchenko.DAOs.MenuDAOImpl" id="menuDAO">
+       <bean class="com.gmail.liliyayalovchenko.dao.hibernate.MenuDAOImpl" id="menuDAO">
               <property name="sessionFactory" ref="sessionFactory"/>
        </bean>
 
@@ -56,7 +56,7 @@
               <property name="menuDAO" ref="menuDAO"/>
        </bean>
 
-       <bean class="com.gmail.liliyayalovchenko.DAOs.WarehouseDAOImpl" id="warehouseDAO">
+       <bean class="com.gmail.liliyayalovchenko.dao.hibernate.WarehouseDAOImpl" id="warehouseDAO">
               <property name="sessionFactory" ref="sessionFactory"/>
               <property name="ingredientDAO" ref="ingredientDAO"/>
        </bean>
@@ -65,7 +65,7 @@
               <property name="warehouseDAO" ref="warehouseDAO"/>
        </bean>
 
-       <bean class="com.gmail.liliyayalovchenko.DAOs.ReadyMealDAOImpl" id="readyMealDAO">
+       <bean class="com.gmail.liliyayalovchenko.dao.hibernate.ReadyMealDAOImpl" id="readyMealDAO">
               <property name="sessionFactory" ref="sessionFactory"/>
        </bean>
 

@@ -1,4 +1,4 @@
-package com.gmail.liliyayalovchenko.domainModel;
+package com.gmail.liliyayalovchenko.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 

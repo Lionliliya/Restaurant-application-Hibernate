@@ -1,8 +1,8 @@
-package com.gmail.liliyayalovchenko.DAOs;
+package com.gmail.liliyayalovchenko.dao;
 
 
-import com.gmail.liliyayalovchenko.domainModel.Dish;
-import com.gmail.liliyayalovchenko.domainModel.Menu;
+import com.gmail.liliyayalovchenko.domain.Dish;
+import com.gmail.liliyayalovchenko.domain.Menu;
 
 import java.util.List;
 
@@ -23,4 +23,6 @@ public interface MenuDAO {
     public void removeDishFromMenu(int menuId, Dish dish);
 
     public List<Menu> getAllMenu();
+
+    public void showAllMenuNames();
 }

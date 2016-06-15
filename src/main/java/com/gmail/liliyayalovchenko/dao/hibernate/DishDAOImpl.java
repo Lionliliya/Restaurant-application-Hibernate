@@ -1,13 +1,16 @@
-package com.gmail.liliyayalovchenko.DAOs;
+package com.gmail.liliyayalovchenko.dao.hibernate;
 
-import com.gmail.liliyayalovchenko.domainModel.Dish;
+import com.gmail.liliyayalovchenko.dao.DishDAO;
+import com.gmail.liliyayalovchenko.domain.Dish;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Query;
 import java.util.List;
+
+//import javax.persistence.Query;
 
 public class DishDAOImpl implements DishDAO {
 
@@ -31,7 +34,7 @@ public class DishDAOImpl implements DishDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("select d from Dish d where d.name like :dishName");
         query.setParameter("dishName", dishName);
-        return (Dish) query.getResultList().get(0);
+        return (Dish) query.list().get(0);
     }
 
     @Override

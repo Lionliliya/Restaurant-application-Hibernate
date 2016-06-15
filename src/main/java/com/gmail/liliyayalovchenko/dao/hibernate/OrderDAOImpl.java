@@ -1,8 +1,9 @@
-package com.gmail.liliyayalovchenko.DAOs;
+package com.gmail.liliyayalovchenko.dao.hibernate;
 
-import com.gmail.liliyayalovchenko.domainModel.Dish;
-import com.gmail.liliyayalovchenko.domainModel.Order;
-import com.gmail.liliyayalovchenko.domainModel.OrderStatus;
+import com.gmail.liliyayalovchenko.dao.OrderDAO;
+import com.gmail.liliyayalovchenko.domain.Dish;
+import com.gmail.liliyayalovchenko.domain.Order;
+import com.gmail.liliyayalovchenko.domain.OrderStatus;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -70,11 +71,20 @@ public class OrderDAOImpl implements OrderDAO {
 
 
     @Override
+    @Transactional(propagation = Propagation.MANDATORY)
     public Order getOrderById(int i) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("select o from Order o where o.id =:id");
         query.setParameter("id", i);
         return (Order) query.getResultList().get(0);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY)
+    public int getLastOrder() {
+        Session session = sessionFactory.getCurrentSession();
+        org.hibernate.query.Query query = session.createQuery("select max(o.orderNumber) from Order o");
+        return (int) query.list().get(0);
     }
 
     public void setSessionFactory(SessionFactory sessionFactory) {

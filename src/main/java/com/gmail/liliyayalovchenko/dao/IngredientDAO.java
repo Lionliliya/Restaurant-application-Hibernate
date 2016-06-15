@@ -1,7 +1,7 @@
-package com.gmail.liliyayalovchenko.DAOs;
+package com.gmail.liliyayalovchenko.dao;
 
 
-import com.gmail.liliyayalovchenko.domainModel.Ingredient;
+import com.gmail.liliyayalovchenko.domain.Ingredient;
 
 import java.util.List;
 

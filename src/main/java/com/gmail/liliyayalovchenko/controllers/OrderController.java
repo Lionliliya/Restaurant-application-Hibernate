@@ -1,9 +1,9 @@
 package com.gmail.liliyayalovchenko.controllers;
 
-import com.gmail.liliyayalovchenko.DAOs.OrderDAO;
-import com.gmail.liliyayalovchenko.domainModel.Dish;
-import com.gmail.liliyayalovchenko.domainModel.Order;
-import com.gmail.liliyayalovchenko.domainModel.OrderStatus;
+import com.gmail.liliyayalovchenko.dao.OrderDAO;
+import com.gmail.liliyayalovchenko.domain.Dish;
+import com.gmail.liliyayalovchenko.domain.Order;
+import com.gmail.liliyayalovchenko.domain.OrderStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -66,5 +66,8 @@ public class OrderController {
         this.orderDAO = orderDAO;
     }
 
-
+    @Transactional
+    public int getLastOrder() {
+       return orderDAO.getLastOrder();
+    }
 }

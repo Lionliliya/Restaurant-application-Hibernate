@@ -1,6 +1,6 @@
-package com.gmail.liliyayalovchenko.DAOs;
+package com.gmail.liliyayalovchenko.dao;
 
-import com.gmail.liliyayalovchenko.domainModel.ReadyMeal;
+import com.gmail.liliyayalovchenko.domain.ReadyMeal;
 
 import java.util.List;
 

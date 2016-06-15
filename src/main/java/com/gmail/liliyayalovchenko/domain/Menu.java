@@ -1,4 +1,4 @@
-package com.gmail.liliyayalovchenko.domainModel;
+package com.gmail.liliyayalovchenko.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,7 +18,7 @@ public class Menu {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="menu")
+    @OneToMany(fetch=FetchType.EAGER, orphanRemoval=true, mappedBy="menu")
     private List<Dish> dishList;
 
     public Menu(List<Dish> dishList, String name) {
@@ -29,7 +29,9 @@ public class Menu {
     public Menu() {}
 
     public void addDishToMenu(Dish dish) {
-        dishList.add(dish);
+        if (!dishList.contains(dish)) {
+            dishList.add(dish);
+        }
         dish.setMenu(this);
     }
 
@@ -61,9 +63,7 @@ public class Menu {
 
     @Override
     public String toString() {
-        printDishList();
-
-        return "Menu{" +
+       return "Menu{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", dishList=" + printDishList() +
@@ -98,10 +98,7 @@ public class Menu {
     }
 
     public void removeDishFromMenu(Dish dish) {
-        if (dishList.contains(dish)) {
-            dishList.remove(dish);
-        } else {
-            System.out.println("Dish is not present in this menu");
-        }
+        dishList.remove(dish);
+
     }
 }

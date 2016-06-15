@@ -1,4 +1,4 @@
-package com.gmail.liliyayalovchenko.domainModel;
+package com.gmail.liliyayalovchenko.domain;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -18,15 +18,15 @@ public class ReadyMeal {
     @Column(name = "dish_numb")
     private int dishNumber;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dish_id")
     private Dish dishId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     private Employee employeeId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id")
     private Order orderId;
 

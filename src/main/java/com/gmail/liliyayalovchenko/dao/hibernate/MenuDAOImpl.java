@@ -1,7 +1,8 @@
-package com.gmail.liliyayalovchenko.DAOs;
+package com.gmail.liliyayalovchenko.dao.hibernate;
 
-import com.gmail.liliyayalovchenko.domainModel.Dish;
-import com.gmail.liliyayalovchenko.domainModel.Menu;
+import com.gmail.liliyayalovchenko.dao.MenuDAO;
+import com.gmail.liliyayalovchenko.domain.Dish;
+import com.gmail.liliyayalovchenko.domain.Menu;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -58,6 +59,17 @@ public class MenuDAOImpl implements MenuDAO {
         sessionFactory.getCurrentSession().createQuery("select m from Menu m").list().
                 forEach(System.out::println);
     }
+
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void showAllMenuNames() {
+        List<Menu> menus = sessionFactory.getCurrentSession().createQuery("select m from Menu m").list();
+        for (Menu menu : menus) {
+            System.out.println(menu.getName());
+        }
+
+    }
+
 
     @Override
     @Transactional(propagation = Propagation.MANDATORY)

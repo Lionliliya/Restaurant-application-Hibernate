@@ -1,8 +1,8 @@
 package com.gmail.liliyayalovchenko.controllers;
 
-import com.gmail.liliyayalovchenko.DAOs.WarehouseDAO;
-import com.gmail.liliyayalovchenko.domainModel.Ingredient;
-import com.gmail.liliyayalovchenko.domainModel.Warehouse;
+import com.gmail.liliyayalovchenko.dao.WarehouseDAO;
+import com.gmail.liliyayalovchenko.domain.Ingredient;
+import com.gmail.liliyayalovchenko.domain.Warehouse;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

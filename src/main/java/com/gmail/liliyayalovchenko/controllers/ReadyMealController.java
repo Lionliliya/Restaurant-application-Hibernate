@@ -1,7 +1,7 @@
 package com.gmail.liliyayalovchenko.controllers;
 
-import com.gmail.liliyayalovchenko.DAOs.ReadyMealDAO;
-import com.gmail.liliyayalovchenko.domainModel.ReadyMeal;
+import com.gmail.liliyayalovchenko.dao.ReadyMealDAO;
+import com.gmail.liliyayalovchenko.domain.ReadyMeal;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

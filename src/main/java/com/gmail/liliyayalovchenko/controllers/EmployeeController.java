@@ -1,7 +1,7 @@
 package com.gmail.liliyayalovchenko.controllers;
 
-import com.gmail.liliyayalovchenko.DAOs.EmployeeDAO;
-import com.gmail.liliyayalovchenko.domainModel.Employee;
+import com.gmail.liliyayalovchenko.dao.EmployeeDAO;
+import com.gmail.liliyayalovchenko.domain.Employee;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;

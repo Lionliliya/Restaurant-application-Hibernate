@@ -1,4 +1,4 @@
-package com.gmail.liliyayalovchenko.domainModel;
+package com.gmail.liliyayalovchenko.domain;
 
 public enum DishCategory {
     MAIN_COURSES,
