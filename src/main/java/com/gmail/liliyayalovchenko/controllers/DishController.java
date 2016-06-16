@@ -29,8 +29,11 @@ public class DishController {
 
     @Transactional
     public void printAllDishes() {
-        for (Dish dish : getAllDishes()) {
-            System.out.println(dish);
+        List<Dish> allDishes = getAllDishes();
+        if (null != allDishes) {
+            allDishes.forEach(System.out::println);
+        } else {
+            System.out.println("Could not get dish list. Error wile connecting to database was occurred.");
         }
 
     }

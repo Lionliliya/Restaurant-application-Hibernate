@@ -141,7 +141,7 @@ public class Main {
         Dish dish;
         try{
             dish = dishController.getDishByName(name);
-            System.out.println(dish);
+            System.out.println(dish != null ? dish : "Dish was nog retrieved. Error!");
         } catch (RuntimeException e) {
             e.printStackTrace();
             LOGGER.error("Cant get dish by this name " + e);
@@ -312,7 +312,7 @@ public class Main {
         try {
             employeeController.deleteEmployee(firstName, secondName);
         } catch (RuntimeException ex) {
-            LOGGER.error("Cannot remove employee by this name. Cannot find employee with such name");
+            LOGGER.error("Cannot remove employee by this name. Cannot find employee with such name " + Arrays.toString(ex.getStackTrace()));
             System.out.println("Wrong input, cannot delete employee by this name");
         }
     }
