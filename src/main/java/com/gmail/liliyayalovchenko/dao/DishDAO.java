@@ -14,5 +14,5 @@ public interface DishDAO {
 
     public Dish getDishByName(String dishName);
 
-    public Object getDishById(int dishId);
+    public Dish getDishById(int dishId);
 }

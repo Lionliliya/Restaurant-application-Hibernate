@@ -22,7 +22,12 @@ public class IngredientDAOImpl implements IngredientDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("select i from Ingredient i where i.id =:id");
         query.setParameter("id", id);
-        return (Ingredient) query.getResultList().get(0);
+        Ingredient ingredient = (Ingredient) query.getResultList().get(0);
+        if (ingredient != null) {
+            return ingredient;
+        } else {
+            throw new RuntimeException("Cant get ingredient by this id.");
+        }
     }
 
     @Override
@@ -37,7 +42,12 @@ public class IngredientDAOImpl implements IngredientDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("select i from Ingredient i where i.name =:name");
         query.setParameter("name", name);
-        return (Ingredient) query.getResultList().get(0);
+        Ingredient ingredient = (Ingredient) query.getResultList().get(0);
+        if (ingredient == null) {
+            throw new RuntimeException("Cant get ingredient by this name. Wrong name!");
+        } else {
+            return ingredient;
+        }
     }
 
     @Override

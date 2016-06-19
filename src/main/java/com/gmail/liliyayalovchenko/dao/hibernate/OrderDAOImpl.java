@@ -35,8 +35,12 @@ public class OrderDAOImpl implements OrderDAO {
         Query query = session.createQuery("select o from Order o where o.orderNumber =:orderNumber");
         query.setParameter("orderNumber", orderNumber);
         Order order = (Order) query.getResultList().get(0);
-        order.addDishToOrder(dish);
-        session.update(order);
+        if (order == null) {
+            throw new RuntimeException("Cant get order by this order number! Wrong order number");
+        } else {
+            order.addDishToOrder(dish);
+            session.update(order);
+        }
     }
 
     @Override
@@ -46,7 +50,11 @@ public class OrderDAOImpl implements OrderDAO {
         Query query = session.createQuery("select o from Order o where o.orderNumber =:orderNumber");
         query.setParameter("orderNumber", orderNumber);
         Order order = (Order) query.getResultList().get(0);
-        session.delete(order);
+        if (order == null) {
+            throw new RuntimeException("Cant get order by this order number! Wrong order number");
+        } else {
+            session.delete(order);
+        }
     }
 
     @Override
@@ -56,8 +64,13 @@ public class OrderDAOImpl implements OrderDAO {
         Query query = session.createQuery("select o from Order o where o.orderNumber like :orderNumber");
         query.setParameter("orderNumber", orderNumber);
         Order order = (Order) query.getResultList().get(0);
-        order.setStatus(OrderStatus.closed);
-        session.update(order);
+        if (order != null) {
+            order.setStatus(OrderStatus.closed);
+            session.update(order);
+
+        } else {
+            throw new RuntimeException("Cant get order by this order number! Wrong order number");
+        }
     }
 
     @Override
@@ -76,7 +89,12 @@ public class OrderDAOImpl implements OrderDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("select o from Order o where o.id =:id");
         query.setParameter("id", i);
-        return (Order) query.getResultList().get(0);
+        Order order = (Order) query.getResultList().get(0);
+        if (order != null) {
+            return order;
+        } else {
+            throw new RuntimeException("Cant get order by this id! Error!");
+        }
     }
 
     @Override

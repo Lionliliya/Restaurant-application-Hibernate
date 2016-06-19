@@ -50,7 +50,12 @@ public class MenuDAOImpl implements MenuDAO {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("select m from Menu m where m.name =:menuName");
         query.setParameter("menuName", name);
-        return (Menu) query.getResultList().get(0);
+        Menu menu = (Menu) query.getResultList().get(0);
+        if (menu == null) {
+            throw new RuntimeException("Cant get Menu by this name! Wrong name!");
+        } else {
+            return menu;
+        }
     }
 
     @Override
@@ -78,8 +83,12 @@ public class MenuDAOImpl implements MenuDAO {
         Query query = session.createQuery("select m from Menu m where m.id =:menuId");
         query.setParameter("menuId", menuId);
         Menu menu = (Menu) query.getResultList().get(0);
-        menu.addDishToMenu(dish);
-        session.update(menu);
+        if (menu == null) {
+            throw new RuntimeException("Cant get menu by this id");
+        } else {
+            menu.addDishToMenu(dish);
+            session.update(menu);
+        }
     }
 
     @Override
@@ -89,8 +98,12 @@ public class MenuDAOImpl implements MenuDAO {
         Query query = session.createQuery("select m from Menu m where m.id =:menuId");
         query.setParameter("menuId", menuId);
         Menu menu = (Menu) query.getResultList().get(0);
-        menu.removeDishFromMenu(dish);
-        session.update(menu);
+        if (menu == null) {
+            throw new RuntimeException("Cant get menu by this id");
+        } else {
+            menu.removeDishFromMenu(dish);
+            session.update(menu);
+        }
     }
 
     @Override

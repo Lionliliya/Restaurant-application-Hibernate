@@ -126,48 +126,35 @@ public class Main {
     /**
      * Starts private methods for dish page **/
     private void getAllDishes() {
-        try {
-            dishController.printAllDishes();
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot get all dishes " + ex);
-            System.out.println("Cannot get all dishes ");
-        }
+        dishController.printAllDishes();
     }
 
     private void getDishByName(Scanner sc) {
         showAllDishNames();
         System.out.println("Enter dish name");
         String name = sc.next();
-        Dish dish;
-        try{
-            dish = dishController.getDishByName(name);
-            System.out.println(dish != null ? dish : "Dish was nog retrieved. Error!");
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            LOGGER.error("Cant get dish by this name " + e);
-            System.out.println("dish with such name does not exist");
-        }
+        Dish dish = dishController.getDishByName(name);
+        System.out.println(dish != null ? dish : "Dish was nog retrieved. Error!");
     }
 
     private void deleteDish(Scanner sc) {
         showAllDishNames();
         System.out.println("Enter dish name to delete");
         String name = sc.next();
-        Dish dish;
-        try{
-            dish = dishController.getDishByName(name);
+        Dish dish = dishController.getDishByName(name);
+        if (dish != null) {
             dishController.removeDish(dish);
-        } catch (RuntimeException e) {
-            LOGGER.error("Cannot get dish by this name.");
-            System.out.println("dish with such name does not exist");
+        } else {
+            LOGGER.info("Cant remove this dish.");
+            System.out.println("Cant remove this dish");
         }
     }
 
     private void addNewDish(Scanner sc) {
         Dish dish = new Dish();
         System.out.println("Enter dish name");
-        String name = sc.next();
-        dish.setName(name);
+        String dishName = sc.next();
+        dish.setName(dishName);
         int number = 1;
         for (DishCategory dc : DishCategory.values()) {
             System.out.println(dc + " enter 0" + number++);
@@ -205,28 +192,28 @@ public class Main {
         ingredientController.getAllIngredients().forEach(System.out::println);
         System.out.println("Enter ingredients. Then enter - f");
         List<Ingredient> ingredientList = new ArrayList<>();
-        try {
-            while (true) {
-                String ingre = sc.next();
-                if (ingre.equals("f")) break;
-                Ingredient ingredientByName = ingredientController.getIngredientByName(ingre);
-                ingredientList.add(ingredientByName);
-            }
-            dish.setIngredients(ingredientList);
-            System.out.println("Enter name Of menu");
-            menuController.printMenuNames();
-            dish.setMenu(menuController.getMenuByName(sc.next()));
-            dishController.createDish(dish);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot add dish " + ex);
+        while (true) {
+            String ingre = sc.next();
+            if (ingre.equals("f")) break;
+            Ingredient ingredientByName = ingredientController.getIngredientByName(ingre);
+            ingredientList.add(ingredientByName);
         }
+        dish.setIngredients(ingredientList);
+        System.out.println("Enter name Of menu");
+        menuController.printMenuNames();
+        dish.setMenu(menuController.getMenuByName(sc.next()));
+        dishController.createDish(dish);
     }
 
     private void showAllDishNames() {
-        for (Dish dish : dishController.getAllDishes()) {
-            System.out.println(dish.getName());
+        List<Dish> allDishes = dishController.getAllDishes();
+        if (allDishes != null)  {
+            for (Dish dish : allDishes) {
+                System.out.println(dish.getName());
+            }
+        } else {
+            System.out.println("There is no dish.");
         }
-
     }
     /**
      * Stop private methods for dish page**/

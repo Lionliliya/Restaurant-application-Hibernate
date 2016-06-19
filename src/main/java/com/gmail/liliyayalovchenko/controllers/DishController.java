@@ -2,55 +2,82 @@ package com.gmail.liliyayalovchenko.controllers;
 
 import com.gmail.liliyayalovchenko.dao.DishDAO;
 import com.gmail.liliyayalovchenko.domain.Dish;
+import org.hibernate.HibernateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class DishController {
 
     private DishDAO dishDAO;
+    private static final Logger LOGGER = LoggerFactory.getLogger(DishController.class);
+
 
     @Transactional
     public void createDish(Dish dish) {
-        Set<Dish> allDishes = new HashSet<>(dishDAO.findAll());
-        if (!allDishes.contains(dish)) {
-            dishDAO.save(dish);
-        } else {
-            System.out.println("Dish already exist!");
-        }
+       try {
+           dishDAO.save(dish);
+       } catch (HibernateException ex) {
+           LOGGER.error("Cant save dish to database! " + ex);
+       }
     }
 
     @Transactional
     public List<Dish> getAllDishes() {
-        return dishDAO.findAll();
+        List<Dish> allDish = null;
+        try {
+            allDish = dishDAO.findAll();
+        } catch (HibernateException ex) {
+            LOGGER.error("Cant get all dishes from database " + ex);
+        }
+        return allDish;
     }
 
     @Transactional
     public void printAllDishes() {
+        LOGGER.info("Start to print all dishes");
         List<Dish> allDishes = getAllDishes();
         if (null != allDishes) {
             allDishes.forEach(System.out::println);
+            LOGGER.info("All dishes are printed");
         } else {
-            System.out.println("Could not get dish list. Error wile connecting to database was occurred.");
+            LOGGER.info("Could not get dish list from database.");
         }
-
     }
 
     @Transactional
     public Dish getDishByName(String dishName) {
-        return  dishDAO.getDishByName(dishName);
+       try {
+           return  dishDAO.getDishByName(dishName);
+       } catch (HibernateException ex) {
+           LOGGER.error("Hibernate exception! " + ex);
+       } catch (RuntimeException ex) {
+           LOGGER.error("Error! " + ex);
+       }
+       return null;
     }
 
     @Transactional
     public void removeDish(Dish dish) {
-        dishDAO.removeDish(dish);
+        try {
+            dishDAO.removeDish(dish);
+        } catch (HibernateException ex) {
+            LOGGER.error("Cannot remove dish! " + ex);
+        }
     }
 
     @Transactional
     public Dish getDishById(int dishId) {
-       return (Dish) dishDAO.getDishById(dishId);
+       try {
+           return dishDAO.getDishById(dishId);
+       } catch (HibernateException ex) {
+           LOGGER.error("Cannot get dish from database " + ex);
+       } catch (RuntimeException ex) {
+           LOGGER.error("Error! " + ex);
+       }
+       return null;
     }
 
     public void setDishDAO(DishDAO dishDAO) {

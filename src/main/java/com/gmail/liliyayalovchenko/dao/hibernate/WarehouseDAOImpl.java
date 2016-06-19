@@ -23,9 +23,7 @@ public class WarehouseDAOImpl implements WarehouseDAO {
         Warehouse warehouse = new Warehouse();
         warehouse.setIngredId(ingredient);
         warehouse.setAmount(amount);
-        System.out.println("try to persist warehouse");
         sessionFactory.getCurrentSession().save(warehouse);
-        System.out.println("warehouse is persisted");
     }
 
     @Override
@@ -36,7 +34,12 @@ public class WarehouseDAOImpl implements WarehouseDAO {
         Ingredient ingredientByName = ingredientDAO.getIngredientByName(ingredientName);
         query.setParameter("ingredient", ingredientByName);
         Warehouse warehouse = (Warehouse) query.getResultList().get(0);
-        session.delete(warehouse);
+        if (warehouse != null) {
+            session.delete(warehouse);
+        } else {
+            throw new RuntimeException("Cant find ingredient on warehouse by this ingredient name");
+        }
+
     }
 
     @Override
@@ -44,14 +47,14 @@ public class WarehouseDAOImpl implements WarehouseDAO {
     public void changeAmount(Ingredient ingredient, int delta, boolean increase) {
         Session session = sessionFactory.getCurrentSession();
         Query query = session.createQuery("select w from Warehouse w where w.ingredId =:ingredId");
-        System.out.println("Try to get id of ingredient");
-        int id = ingredient.getId();
-        System.out.println("Ingredient id = " + id);
         query.setParameter("ingredId", ingredient);
         Warehouse warehouse = (Warehouse) query.getResultList().get(0);
-        System.out.println(warehouse);
-        warehouse.changeAmount(delta, increase);
-        session.update(warehouse);
+        if (warehouse != null) {
+            warehouse.changeAmount(delta, increase);
+            session.update(warehouse);
+        } else {
+            throw new RuntimeException("Cant find this ingredient on warehouse! Error!");
+        }
     }
 
     @Override
@@ -61,7 +64,12 @@ public class WarehouseDAOImpl implements WarehouseDAO {
         Query query = session.createQuery("select w from Warehouse w where w.ingredId = " +
                 "(select i.id from Ingredient i where i.name =:name)");
         query.setParameter("name", ingredientName);
-        return  (Warehouse) query.getResultList().get(0);
+        Warehouse warehouse = (Warehouse) query.getResultList().get(0);
+        if (warehouse != null) {
+            return warehouse;
+        } else {
+            throw new RuntimeException("Cant find ingredient on warehouse by this name");
+        }
     }
 
     @Override
