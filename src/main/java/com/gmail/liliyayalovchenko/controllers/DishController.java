@@ -17,8 +17,10 @@ public class DishController {
 
     @Transactional
     public void createDish(Dish dish) {
+       LOGGER.info("Start persisting dish.");
        try {
            dishDAO.save(dish);
+           LOGGER.info("Dish is persisted.");
        } catch (HibernateException ex) {
            LOGGER.error("Cant save dish to database! " + ex);
        }
@@ -27,8 +29,10 @@ public class DishController {
     @Transactional
     public List<Dish> getAllDishes() {
         List<Dish> allDish = null;
+        LOGGER.info("Start getting all dishes.");
         try {
             allDish = dishDAO.findAll();
+            LOGGER.info("All dishes are got.");
         } catch (HibernateException ex) {
             LOGGER.error("Cant get all dishes from database " + ex);
         }
@@ -49,8 +53,11 @@ public class DishController {
 
     @Transactional
     public Dish getDishByName(String dishName) {
+       LOGGER.info("Try to get dish by name.");
        try {
-           return  dishDAO.getDishByName(dishName);
+           Dish dish = dishDAO.getDishByName(dishName);
+           LOGGER.info("Dish is got by name.");
+           return dish;
        } catch (HibernateException ex) {
            LOGGER.error("Hibernate exception! " + ex);
        } catch (RuntimeException ex) {
@@ -61,8 +68,10 @@ public class DishController {
 
     @Transactional
     public void removeDish(Dish dish) {
+        LOGGER.info("Start to removing dish.");
         try {
             dishDAO.removeDish(dish);
+            LOGGER.info("Dish is removed");
         } catch (HibernateException ex) {
             LOGGER.error("Cannot remove dish! " + ex);
         }
@@ -70,8 +79,11 @@ public class DishController {
 
     @Transactional
     public Dish getDishById(int dishId) {
+       LOGGER.info("Start getting dish by id.");
        try {
-           return dishDAO.getDishById(dishId);
+           Dish dishById = dishDAO.getDishById(dishId);
+           LOGGER.info("Dish by id is got.");
+           return dishById;
        } catch (HibernateException ex) {
            LOGGER.error("Cannot get dish from database " + ex);
        } catch (RuntimeException ex) {

@@ -14,6 +14,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
     private SessionFactory sessionFactory;
 
+
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
     public void save(Employee employee) {

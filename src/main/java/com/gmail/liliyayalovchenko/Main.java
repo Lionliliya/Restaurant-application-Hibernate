@@ -66,6 +66,7 @@ public class Main {
                 System.out.println("Good Bay!");
                 stopApp = true;
                 LOGGER.info("User left the application");
+                sc.close();
                 break;
             } else {
                 System.out.println("Wrong input!!! Try again");
@@ -79,6 +80,7 @@ public class Main {
             } else {
                 stopApp = true;
                 LOGGER.info("User left the application");
+                sc.close();
                 break;
             }
         }
@@ -264,29 +266,27 @@ public class Main {
         String secondName = sc.next();
         System.out.println("Enter first name of employee");
         String firstName = sc.next();
-
-        Employee employee;
-        try {
-            employee = employeeController.getEmployeeByName(firstName, secondName);
-            System.out.println(employee);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Exception " + ex);
-            System.out.println("Can't find employee by this name");
-        }
+        Employee employee = employeeController.getEmployeeByName(firstName, secondName);
+        System.out.println(employee != null ? employee : "Cannot get employee by this name");
     }
 
     private void showAllEmplNames() {
-        for (Employee employee : employeeController.getAllEmployees()) {
-            System.out.println(employee.getSecondName() + " " + employee.getFirstName());
+        List<Employee> allEmployees = employeeController.getAllEmployees();
+        if (allEmployees != null) {
+            for (Employee employee : allEmployees) {
+                System.out.println(employee.getSecondName() + " " + employee.getFirstName());
+            }
+        } else {
+            System.out.println("List of employee is empty.");
         }
     }
 
     private void getAllEmployees() {
-        try {
-            List<Employee> employeeList = employeeController.getAllEmployees();
+        List<Employee> employeeList = employeeController.getAllEmployees();
+        if (employeeList != null) {
             employeeList.forEach(System.out::println);
-        } catch (RuntimeException e) {
-            LOGGER.error("Cannot get all employee " +e);
+        } else {
+            System.out.println("List of employee is empty");
         }
     }
 
@@ -296,12 +296,7 @@ public class Main {
         String secondName = sc.next();
         System.out.println("Enter first name of employee");
         String firstName = sc.next();
-        try {
-            employeeController.deleteEmployee(firstName, secondName);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot remove employee by this name. Cannot find employee with such name " + Arrays.toString(ex.getStackTrace()));
-            System.out.println("Wrong input, cannot delete employee by this name");
-        }
+        employeeController.deleteEmployee(firstName, secondName);
     }
 
     private void addNewEmployee(Scanner sc) {
@@ -324,7 +319,7 @@ public class Main {
             }
             System.out.println("Enter position");
             String position = sc.next();
-            Position positionOfEmployee = null;
+            Position positionOfEmployee;
             if (position.equals("01"))  {
                 positionOfEmployee = Position.ADMINISTRATOR;
             } else if (position.equals("02")) {
@@ -348,8 +343,8 @@ public class Main {
             employeeController.createEmployee(employee);
         } catch (ParseException e) {
             LOGGER.error("Exception while parsing date" + e);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot add employee " + ex);
+        } catch (InputMismatchException ex) {
+            LOGGER.error("Wrong format of salary! It should be an integer number.");
         }
     }
     /**
@@ -780,12 +775,7 @@ public class Main {
     private void changeAmountOfIngredient(Scanner sc) {
         showAllIngredNames();
         System.out.println("Enter name of ingredient to change it amount");
-        Ingredient ingredient = null;
-        try {
-            ingredient = ingredientController.getIngredientByName(sc.next());
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot get ingredient by name");
-        }
+        Ingredient ingredient = ingredientController.getIngredientByName(sc.next());
         System.out.println("Enter amount");
         int amount = sc.nextInt();
         System.out.println("If you want to increase amount enter y. If to decrease - n");
@@ -809,17 +799,19 @@ public class Main {
 
     private void addNewIngredient(Scanner sc) {
         System.out.println("Enter name of ingredient");
-        ingredientController.getAllIngredients().forEach(System.out::println);
+        List<Ingredient> allIngredients = ingredientController.getAllIngredients();
+        if (allIngredients != null) {
+            allIngredients.forEach(System.out::println);
+        } else {
+            System.out.println("No ingredient is available");
+        }
         String ingredientName = sc.next();
         System.out.println("This ingredient is new in Ingredient department: 'y'/'n'");
         boolean newIngred = sc.next().equals("y");
-        Ingredient ingredient = null;
+        Ingredient ingredient;
         if (!newIngred) {
-            try {
-                ingredient = ingredientController.getIngredientByName(ingredientName);
-            } catch (RuntimeException ex) {
-                LOGGER.error("Cannot get ingredient by this name");
-            }
+            ingredient = ingredientController.getIngredientByName(ingredientName);
+
         } else {
             ingredient = new Ingredient();
             ingredient.setName(ingredientName);
@@ -829,6 +821,8 @@ public class Main {
         int amount = sc.nextInt();
         if (ingredient != null) {
             warehouseController.addIngredient(ingredient, amount);
+        } else {
+            System.out.println("Cannot get ingredient by this name.");
         }
     }
     /**
