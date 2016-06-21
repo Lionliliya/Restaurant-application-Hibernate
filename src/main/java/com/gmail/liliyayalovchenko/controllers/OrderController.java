@@ -130,15 +130,16 @@ public class OrderController {
 
     @Transactional
     public int getLastOrder() {
-        int lastOrder = 0;
+        int lastOrder;
         LOGGER.info("Trying to get last order id.");
         try {
             lastOrder = orderDAO.getLastOrder();
             LOGGER.info("Last order id was got.");
+            return lastOrder;
         } catch (HibernateException ex) {
             LOGGER.error("Cannot get last order id from database " + ex);
+            throw new RuntimeException("Cant get last order id. Could not connected to database in right way.");
         }
-        return lastOrder;
     }
 
     public void setOrderDAO(OrderDAO orderDAO) {

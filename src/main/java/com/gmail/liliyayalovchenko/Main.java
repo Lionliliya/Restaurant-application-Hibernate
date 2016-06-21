@@ -33,12 +33,20 @@ public class Main {
     }
 
     private void start() {
-
-        orderNumber = orderController.getLastOrder() + 1;
         startApplication();
         Scanner sc = new Scanner(System.in);
         String selection = null;
         stopApp = false;
+
+        try {
+            orderNumber = orderController.getLastOrder() + 1;
+        } catch (RuntimeException ex) {
+            LOGGER.error("Could not connect! " + ex);
+            System.out.println("Could not connect!");
+            stopApp = true;
+            selection = "q";
+        }
+
         while (!"q".equals(selection) && !stopApp) {
 
             selection = sc.next();
@@ -639,10 +647,8 @@ public class Main {
         ReadyMeal readyMeal = new ReadyMeal();
         showAllDishNames();
         System.out.println("Enter dish name");
-        Dish dish;
-        Employee employee;
-        try {
-            dish = dishController.getDishByName(sc.next());
+        Dish dish = dishController.getDishByName(sc.next());
+        if (dish != null) {
             readyMeal.setDishId(dish);
             readyMeal.setDishNumber(dish.getId());
             showAllEmplNames();
@@ -650,32 +656,35 @@ public class Main {
             String secondName = sc.next();
             System.out.println("Enter employee first name");
             String firstName = sc.next();
-            employee = employeeController.getEmployeeByName(firstName, secondName);
-            readyMeal.setEmployeeId(employee);
-            List<Order> openOrders = orderController.getOpenOrClosedOrder(OrderStatus.opened);
-            if (openOrders.size() > 0) {
+            Employee employee = employeeController.getEmployeeByName(firstName, secondName);
+            if (employee != null) {
+                readyMeal.setEmployeeId(employee);
+                List<Order> openOrders = orderController.getOpenOrClosedOrder(OrderStatus.opened);
+                if (openOrders != null && openOrders.size() > 0) {
 
-                for (Order openOrder : openOrders) {
-                    System.out.println("order_id " + openOrder.getId() + " ");
+                    for (Order openOrder : openOrders) {
+                        System.out.println("order_id " + openOrder.getId() + " ");
+                    }
+                    System.out.println("Select order id");
+                    Order order = orderController.getOrderById(sc.nextInt());
+                    if (order != null) readyMeal.setOrderId(order);
+                    readyMeal.setMealDate(new java.sql.Date(new Date(System.currentTimeMillis()).getTime()));
+                    readyMealController.addReadyMeal(readyMeal);
+                } else {
+                    LOGGER.info("No open orders. Cant save ready meal");
                 }
-                System.out.println("Select order id");
-                readyMeal.setOrderId(orderController.getOrderById(sc.nextInt()));
-                readyMeal.setMealDate(new java.sql.Date(new Date(System.currentTimeMillis()).getTime()));
-                readyMealController.addReadyMeal(readyMeal);
-            } else {
-                LOGGER.info("No open orders. Cant save ready meal");
             }
-        } catch (RuntimeException ex) {
-            LOGGER.error("Wrong input!!!Try again!");
+        } else {
+            System.out.println("Cannot add dish with this name.");
         }
     }
 
     private void getAllreadyMeals() {
-        try {
-            List<ReadyMeal> readyMeals = readyMealController.getAllReadyMeals();
+        List<ReadyMeal> readyMeals = readyMealController.getAllReadyMeals();
+        if (readyMeals != null) {
             readyMeals.forEach(System.out::println);
-        } catch (RuntimeException e) {
-            LOGGER.error("Cannot get all ready meals " + e);
+        } else {
+            System.out.println("There is no ready meal.");
         }
     }
     /**Stop private methods for ready meal page**/
@@ -724,83 +733,85 @@ public class Main {
     /**
      * Start private methods for warehouse page**/
     private void getAllIngredients() {
-        try {
-            List<Warehouse> warehouseList = warehouseController.getAllIngredients();
+        List<Warehouse> warehouseList = warehouseController.getAllIngredients();
+        if (warehouseList != null) {
             warehouseList.forEach(System.out::println);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot get all ingredients " + ex);
+        } else {
+            System.out.println("No ingredient on warehouse is found.");
         }
     }
 
     private void findIngredientByName(Scanner sc) {
-        for (Warehouse ingredient : warehouseController.getAllIngredients()) {
-            System.out.println(ingredient.getIngredId().getName());
-        }
+        List<Warehouse> ingredients = warehouseController.getAllIngredients();
+        if (ingredients != null) {
+            for (Warehouse ingredient : ingredients) {
+                System.out.println(ingredient.getIngredId().getName());
+            }
 
-        System.out.println("Enter name of ingredient");
-        try {
+            System.out.println("Enter name of ingredient");
             Warehouse warehouse = warehouseController.findByName(sc.next());
-            System.out.println(warehouse);
-        } catch (RuntimeException e) {
-            System.out.println("No Ingredient with such name on warehouse");
+            System.out.println(warehouse != null ? warehouse : "There is no ingredient on warehouse with such name.");
+        } else {
+            System.out.println("There is no ingredient on warehouse.");
         }
     }
 
     private void showAllIngredNames() {
-       warehouseController.getAllIngredients().forEach(System.out::println);
+        List<Warehouse> allIngredients = warehouseController.getAllIngredients();
+        if (allIngredients != null) {
+            allIngredients.forEach(System.out::println);
+        } else {
+            System.out.println("List of ingredients on warehouse is empty.");
+        }
     }
 
     private void changeAmountOfIngredient(Scanner sc) {
         showAllIngredNames();
         System.out.println("Enter name of ingredient to change it amount");
         Ingredient ingredient = ingredientController.getIngredientByName(sc.next());
-        System.out.println("Enter amount");
-        int amount = sc.nextInt();
-        System.out.println("If you want to increase amount enter y. If to decrease - n");
-        boolean increase = sc.next().equals("y");
-        if (ingredient !=null ) {
+        if (ingredient != null) {
+            System.out.println("Enter amount");
+            int amount = sc.nextInt();
+            System.out.println("If you want to increase amount enter y. If to decrease - n");
+            boolean increase = sc.next().equals("y");
             warehouseController.changeAmount(ingredient, amount, increase);
         } else {
-            LOGGER.error("Ingredient was not selected in right way");
+            System.out.println("There is no ingredient with such name ");
         }
     }
 
     private void removeIngredientByName(Scanner sc) {
         showAllIngredNames();
         System.out.println("Enter name of ingredient to remove");
-        try {
-            warehouseController.removeIngredient(sc.next());
-        } catch (RuntimeException ex) {
-            LOGGER.error("cannot remove ingredient by this name!");
-        }
+        warehouseController.removeIngredient(sc.next());
     }
 
     private void addNewIngredient(Scanner sc) {
-        System.out.println("Enter name of ingredient");
         List<Ingredient> allIngredients = ingredientController.getAllIngredients();
         if (allIngredients != null) {
             allIngredients.forEach(System.out::println);
+            System.out.println("Enter name of ingredient");
+            String ingredientName = sc.next();
+            System.out.println("This ingredient is new in Ingredient department: 'y'/'n'");
+            boolean newIngred = sc.next().equals("y");
+            Ingredient ingredient;
+            if (!newIngred) {
+                ingredient = ingredientController.getIngredientByName(ingredientName);
+
+            } else {
+                ingredient = new Ingredient();
+                ingredient.setName(ingredientName);
+                ingredientController.createIngredient(ingredient);
+            }
+            System.out.println("Enter amount of ingredient");
+            int amount = sc.nextInt();
+            if (ingredient != null) {
+                warehouseController.addIngredient(ingredient, amount);
+            } else {
+                System.out.println("Cannot get ingredient by this name.");
+            }
         } else {
             System.out.println("No ingredient is available");
-        }
-        String ingredientName = sc.next();
-        System.out.println("This ingredient is new in Ingredient department: 'y'/'n'");
-        boolean newIngred = sc.next().equals("y");
-        Ingredient ingredient;
-        if (!newIngred) {
-            ingredient = ingredientController.getIngredientByName(ingredientName);
-
-        } else {
-            ingredient = new Ingredient();
-            ingredient.setName(ingredientName);
-            ingredientController.createIngredient(ingredient);
-        }
-        System.out.println("Enter amount of ingredient");
-        int amount = sc.nextInt();
-        if (ingredient != null) {
-            warehouseController.addIngredient(ingredient, amount);
-        } else {
-            System.out.println("Cannot get ingredient by this name.");
         }
     }
     /**
@@ -830,10 +841,6 @@ public class Main {
 
     public void setOrderController(OrderController orderController) {
         this.orderController = orderController;
-    }
-
-    public void setOrderNumber(int orderNumber) {
-        this.orderNumber = orderNumber;
     }
 
     public void setWarehouseController(WarehouseController warehouseController) {

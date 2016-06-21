@@ -67,6 +67,30 @@ public class ReadyMeal {
         this.mealDate = mealDate;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getDishNumber() {
+        return dishNumber;
+    }
+
+    public Dish getDishId() {
+        return dishId;
+    }
+
+    public Employee getEmployeeId() {
+        return employeeId;
+    }
+
+    public Order getOrderId() {
+        return orderId;
+    }
+
+    public Date getMealDate() {
+        return mealDate;
+    }
+
     @Override
     public String toString() {
         return "ReadyMeal{" +
