@@ -4,70 +4,146 @@ import com.gmail.liliyayalovchenko.dao.OrderDAO;
 import com.gmail.liliyayalovchenko.domain.Dish;
 import com.gmail.liliyayalovchenko.domain.Order;
 import com.gmail.liliyayalovchenko.domain.OrderStatus;
+import org.hibernate.HibernateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class OrderController {
 
     private OrderDAO orderDAO;
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
 
     @Transactional
     public void saveOrder(Order order) {
-        Set<Order> allOrders = new HashSet<>(orderDAO.findAll());
-        if (!allOrders.contains(order)) {
+        LOGGER.info("Trying to persist order.");
+        try {
             orderDAO.save(order);
-        } else {
-            System.out.println("Order already exist!");
+            LOGGER.info("Order is persisted.");
+        } catch (HibernateException ex) {
+            LOGGER.error("Cannot persist order to database. " + ex);
+            System.out.println("Order was not saved!");
         }
     }
 
     @Transactional
     public List<Order> getAllorders() {
-        return orderDAO.findAll();
+        List<Order> all = null;
+        LOGGER.info("Trying to get all orders");
+        try {
+            all = orderDAO.findAll();
+            LOGGER.info("All orders were got");
+        } catch (HibernateException ex) {
+            LOGGER.error("Cannot get list of orders from database. " + ex);
+        }
+        return all;
     }
 
 
 
     @Transactional
     public void addDishToOpenOrder(Dish dish, int orderNumber) {
-        orderDAO.addDishToOpenOrder(dish, orderNumber);
+        LOGGER.info("Trying to add dish to order.");
+        try{
+            orderDAO.addDishToOpenOrder(dish, orderNumber);
+            LOGGER.info("Dish " + dish.getName() + " was added to order " + orderNumber);
+        } catch (HibernateException ex) {
+            LOGGER.error("Cannot persist dish to order. " + ex);
+            System.out.println("Dish " + dish.getName() + " was not added to order number " + orderNumber);
+        } catch (RuntimeException ex) {
+            LOGGER.error("Wrong input! " + ex);
+            System.out.println("Dish " + dish.getName() + " was not added to order number " + orderNumber);
+        }
     }
 
     @Transactional
     public void deleteOrder(int orderNumber) {
-        orderDAO.deleteOrder(orderNumber);
+        LOGGER.info("Trying to delete order " + orderNumber);
+       try {
+           orderDAO.deleteOrder(orderNumber);
+           LOGGER.info("Order " + orderNumber + " was deleted.");
+       } catch (HibernateException ex) {
+            LOGGER.error("Cannot delete order " + orderNumber + " from database. " + ex);
+           System.out.println("Order " + orderNumber + " was not deleted.");
+       } catch (RuntimeException ex) {
+           LOGGER.error("Wrong input! " + ex);
+           System.out.println("Order " + orderNumber + " was not deleted.");
+       }
     }
 
     @Transactional
     public void changeOrderStatus(int orderNumber) {
-        orderDAO.changeOrderStatus(orderNumber);
+        LOGGER.info("Trying to change order " + orderNumber + " status.");
+        try {
+            orderDAO.changeOrderStatus(orderNumber);
+            LOGGER.info("Order " + orderNumber + " status was changed.");
+        } catch (HibernateException ex) {
+            LOGGER.error("Cannot change order " + orderNumber + " in database." + ex);
+            System.out.println("Order " + orderNumber + " status was not changed.");
+        } catch (RuntimeException ex) {
+            LOGGER.error("Wrong input! " + ex);
+            System.out.println("Order " + orderNumber + " status was not changed.");
+        }
     }
 
     @Transactional
     public List<Order> getOpenOrClosedOrder(OrderStatus orderStatus) {
-        return orderDAO.getOpenOrClosedOrder(orderStatus);
+        List<Order> openOrClosedOrder = null;
+        LOGGER.info("Trying to get " + orderStatus +" orders.");
+        try {
+            openOrClosedOrder = orderDAO.getOpenOrClosedOrder(orderStatus);
+            LOGGER.info("Orders were got.");
+        } catch (HibernateException ex) {
+            LOGGER.error("Cant get orders from database " + ex);
+        }
+        return openOrClosedOrder;
     }
 
     @Transactional
     public void printOpenOrClosedOrders(OrderStatus orderStatus) {
-        getOpenOrClosedOrder(orderStatus).forEach(System.out::println);
-
+        LOGGER.info("Trying to print all " + orderStatus + " orders.");
+        List<Order> openOrClosedOrder = getOpenOrClosedOrder(orderStatus);
+        if (openOrClosedOrder != null) {
+            openOrClosedOrder.forEach(System.out::println);
+            LOGGER.info("Orders were printed.");
+        } else {
+            System.out.println("No order was found.");
+        }
     }
 
     @Transactional
     public Order getOrderById(int i) {
-        return orderDAO.getOrderById(i);
+        Order orderById = null;
+        LOGGER.info("Trying to get order by id " + i);
+        try {
+            orderById = orderDAO.getOrderById(i);
+            LOGGER.info("Order by id " + i + " is got.");
+        } catch (HibernateException ex) {
+            LOGGER.error("Cannot get order by id " + i + " from database " + ex);
+        } catch (RuntimeException ex) {
+           LOGGER.error("Wrong input " + i + ex);
+        }
+        return orderById;
+    }
+
+    @Transactional
+    public int getLastOrder() {
+        int lastOrder = 0;
+        LOGGER.info("Trying to get last order id.");
+        try {
+            lastOrder = orderDAO.getLastOrder();
+            LOGGER.info("Last order id was got.");
+        } catch (HibernateException ex) {
+            LOGGER.error("Cannot get last order id from database " + ex);
+        }
+        return lastOrder;
     }
 
     public void setOrderDAO(OrderDAO orderDAO) {
         this.orderDAO = orderDAO;
     }
 
-    @Transactional
-    public int getLastOrder() {
-       return orderDAO.getLastOrder();
-    }
+
 }

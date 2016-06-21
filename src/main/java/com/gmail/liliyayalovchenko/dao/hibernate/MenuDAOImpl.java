@@ -9,9 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MenuDAOImpl implements MenuDAO {
 
@@ -24,18 +22,12 @@ public class MenuDAOImpl implements MenuDAO {
         menu.setName(menuName);
         menu.setDishList(dishList);
         sessionFactory.getCurrentSession().save(menu);
-
     }
 
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
     public void createMenu(Menu menu) {
-        Set<Menu> allMenu = new HashSet<>(getAllMenu());
-        if (!allMenu.contains(menu)) {
-            sessionFactory.getCurrentSession().save(menu);
-        } else {
-            System.out.println("Menu already exist!");
-        }
+        sessionFactory.getCurrentSession().save(menu);
     }
 
     @Override

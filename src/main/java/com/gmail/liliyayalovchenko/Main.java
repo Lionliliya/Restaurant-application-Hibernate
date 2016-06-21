@@ -399,81 +399,77 @@ public class Main {
     /**
      * Start private methods for menu page**/
     private void addNewMenue(Scanner sc) {
+        menuController.printMenuNames();
         System.out.println("Enter name of new Menu");
         String nameMenu = sc.next();
-        menuController.printMenuNames();
         System.out.println("Enter dish name to add to menu. To finish enter - 'f'");
         List<Dish> dishList = new ArrayList<>();
         String dishName;
-        try {
-            while (true) {
-                dishName = sc.next();
-                if (dishName.equals("f")) break;
-                Dish dish = dishController.getDishByName(dishName);
-                dishList.add(dish);
 
-            }
-            menuController.addNewMenu(nameMenu, dishList);
-        } catch (RuntimeException e) {
-            LOGGER.error("Exception " + e);
+        while (true) {
+            dishName = sc.next();
+            if (dishName.equals("f")) break;
+            Dish dish = dishController.getDishByName(dishName);
+            if (dish!=null) dishList.add(dish);
         }
+        menuController.addNewMenu(nameMenu, dishList);
     }
 
     private void removeMenu(Scanner sc) {
         menuController.printMenuNames();
         System.out.println("Enter name of menu to delete");
-        try {
-            Menu menu = menuController.getMenuByName(sc.next());
+        Menu menu = menuController.getMenuByName(sc.next());
+        if (menu != null) {
             menuController.removeMenu(menu);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot get menu by this name " +ex);
+        } else {
+            System.out.println("Cannot remove this menu");
         }
     }
 
     private void getMenuByName(Scanner sc) {
         menuController.printMenuNames();
         System.out.println("Enter name of menu to see");
-        try {
-            Menu menu = menuController.getMenuByName(sc.next());
-            System.out.println(menu);
-        } catch (RuntimeException ex) {
-            LOGGER.error("cannot get menu by this name " + ex);
-        }
+        Menu menu = menuController.getMenuByName(sc.next());
+        System.out.println(menu != null ? menu : "Cant find menu by this name.");
     }
 
     private void showAllMenues() {
-        try {
-            menuController.showAllMenus();
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot show list of menus " + ex);
-        }
+        menuController.showAllMenus();
     }
 
     private void removeDishFromMenu(Scanner sc) {
         menuController.showAllMenus();
         System.out.println("Enter menu name you want to remove dish");
-        try {
-            Menu menu = menuController.getMenuByName(sc.next());
+        Menu menu = menuController.getMenuByName(sc.next());
+        if (menu != null) {
             menu.getDishList().forEach(System.out::println);
             System.out.println("Enter dish name to remove");
             Dish dish = dishController.getDishByName(sc.next());
-            menuController.removeDishFromMenu(menu.getId(), dish);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Error while removing dish from menu Main() method " +ex);
+            if (dish != null) {
+                menuController.removeDishFromMenu(menu.getId(), dish);
+            } else {
+                System.out.println("Cant remove this dish.");
+            }
+        } else {
+            System.out.println("Cant remove dish from chosen menu.");
         }
-    }
+     }
 
     private void addDishToMenu(Scanner sc) {
         menuController.showAllMenus();
         System.out.println("Enter menu name you want to add dish");
-        try {
-            Menu menu = menuController.getMenuByName(sc.next());
+        Menu menu = menuController.getMenuByName(sc.next());
+        if (menu != null) {
             showAllDishNames();
             System.out.println("Enter dish name to add to menu");
             Dish dish = dishController.getDishByName(sc.next());
-            menuController.addDishToMenu(menu.getId(), dish);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot gat dish or menu " + ex);
+            if (dish != null) {
+                menuController.addDishToMenu(menu.getId(), dish);
+            } else {
+                System.out.println("Cannot add this dish to menu.");
+            }
+        } else {
+            System.out.println("Cannot add dish to chosen menu.");
         }
     }
     /**
@@ -526,18 +522,15 @@ public class Main {
     private void addDishToOpenOrder(Scanner sc) {
         System.out.println("Enter dish name");
         showAllDishNames();
-        Dish dish;
-        try {
-            dish = dishController.getDishByName(sc.next());
-
+        Dish dish = dishController.getDishByName(sc.next());
+        if (dish != null) {
             for (Order order : orderController.getOpenOrClosedOrder(OrderStatus.opened)) {
                 System.out.println("Order number " + order.getOrderNumber() + " ");
             }
-
             System.out.println("Select number of order");
             orderController.addDishToOpenOrder(dish, sc.nextInt());
-        } catch (RuntimeException ex) {
-            LOGGER.error("Error wile add dish to open order." + ex);
+        } else {
+            System.out.println("Cannot add this dish.");
         }
     }
 
@@ -549,9 +542,8 @@ public class Main {
         String secondName = sc.next();
         System.out.println("Enter employee firstName");
         String firstName = sc.next();
-        Employee employee;
-        try {
-            employee = employeeController.getEmployeeByName(firstName, secondName);
+        Employee employee =  employeeController.getEmployeeByName(firstName, secondName);
+        if (employee != null) {
             order.setEmployeeId(employee);
             System.out.println("Enter table number");
             order.setTableNumber(sc.nextInt());
@@ -564,66 +556,52 @@ public class Main {
 
             while (true) {
                 name = sc.next();
-
                 if ("f".equals(name)) break;
                 System.out.println("You entered " + name);
-                dishForOrder.add(dishController.getDishByName(name));
+                Dish dishByName = dishController.getDishByName(name);
+                if (dishByName != null) dishForOrder.add(dishByName);
             }
             order.setDishList(dishForOrder);
             orderController.saveOrder(order);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Exception " + ex);
-            System.out.println("Cannot find employee or dish with such name");
+        } else {
+            System.out.println("Cannot create order with this employee.");
         }
     }
 
     private void getAllOpenOrClosedOrders(Scanner sc) {
         System.out.println("Select order status to find, print: 'closed' or 'opened'");
-        List<Order> orders;
         OrderStatus orderStatus;
-
-        try {
-            String status = sc.next();
-            if (status.equals("opened")) {
-                orderStatus = OrderStatus.opened;
-            } else {
-                orderStatus = OrderStatus.closed;
-            }
-            orderController.printOpenOrClosedOrders(orderStatus);
-
-        } catch (RuntimeException e) {
-            LOGGER.error("No orders with such status! " + e);
-            System.out.println("can not add this dish to order");
+        String status = sc.next();
+        if (status.equals("opened")) {
+            orderStatus = OrderStatus.opened;
+        } else {
+            orderStatus = OrderStatus.closed;
         }
+        orderController.printOpenOrClosedOrders(orderStatus);
     }
 
     private void changeOrderStatus(Scanner sc) {
         System.out.println("Enter number of order to change status to 'closed'");
         showOpenedOrdersNumb();
-        try {
-            orderController.changeOrderStatus(sc.nextInt());
-        } catch (RuntimeException e) {
-            LOGGER.error("Cannot find order by this order number");
-        }
+        orderController.changeOrderStatus(sc.nextInt());
     }
 
     private void showOpenedOrdersNumb() {
-        for (Order order : orderController.getOpenOrClosedOrder(OrderStatus.opened)) {
-            System.out.println("Order #" + order.getOrderNumber());
-        }
+        List<Order> openOrClosedOrder = orderController.getOpenOrClosedOrder(OrderStatus.opened);
+         if (openOrClosedOrder != null) {
+             for (Order order : openOrClosedOrder) {
+                 System.out.println("Order #" + order.getOrderNumber());
+             }
+         } else {
+             System.out.println("No opened order is found.");
+         }
     }
 
     private void deleteOrder(Scanner sc) {
         System.out.println("Enter number of order to delete");
         showOpenedOrdersNumb();
-        try {
-
-            int orderNumber1 = sc.nextInt();
-            readyMealController.removeReadyMeal(orderNumber1);
-            orderController.deleteOrder(orderNumber1);
-        } catch (RuntimeException ex) {
-            LOGGER.error("Cannot find order by this order number " + ex);
-        }
+        int orderNumber = sc.nextInt();
+        orderController.deleteOrder(orderNumber);
     }
     /**
      * End of private methods for Order page**/

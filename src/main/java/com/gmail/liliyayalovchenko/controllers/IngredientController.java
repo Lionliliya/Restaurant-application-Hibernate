@@ -12,7 +12,7 @@ import java.util.List;
 public class IngredientController {
 
     private IngredientDAO ingredientDAO;
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IngredientController.class);
 
     @Transactional
     public Ingredient getIngredientById(int id) {
