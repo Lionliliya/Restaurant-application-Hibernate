@@ -98,7 +98,22 @@ public class WarehouseController {
         return endingIngredients;
     }
 
+    @Transactional
+    public boolean validateAmount(List<Ingredient> ingredients) {
+        LOGGER.info("Trying to check availability of ingredients to create ready meal");
+        boolean enoughIngredient = true;
+        for (Ingredient ingredient : ingredients) {
+            if (!warehouseDAO.checkAvailiability(ingredient)) {
+                enoughIngredient = false;
+                System.out.println(ingredient.getName() + " is not enough amount on warehouse");
+                LOGGER.info(ingredient.getName() + " is not enough on warehouse!");
+            }
+        }
+        return enoughIngredient;
+    }
+
     public void setWarehouseDAO(WarehouseDAO warehouseDAO) {
         this.warehouseDAO = warehouseDAO;
     }
+
 }

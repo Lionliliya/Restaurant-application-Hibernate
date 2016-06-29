@@ -1,6 +1,7 @@
 package com.gmail.liliyayalovchenko.controllers;
 
 import com.gmail.liliyayalovchenko.dao.ReadyMealDAO;
+import com.gmail.liliyayalovchenko.domain.Ingredient;
 import com.gmail.liliyayalovchenko.domain.ReadyMeal;
 import org.hibernate.HibernateException;
 import org.slf4j.Logger;
@@ -32,6 +33,13 @@ public class ReadyMealController {
         LOGGER.info("Trying to persist meal.");
         try {
             readyMealDAO.addReadyMeal(meal);
+            for (Ingredient ingredient : meal.getDishId().getIngredients()) {
+                String ingredientName = ingredient.getName();
+                LOGGER.info(ingredientName + " try to change amount");
+                readyMealDAO.changeAmountOnWarehouse(ingredient);
+                LOGGER.info(ingredientName + " amount was successfully changed");
+            }
+
             LOGGER.info("Ready meal was persisted to database.");
         } catch (HibernateException ex) {
             LOGGER.error("Cannot persist ready meal " + ex);
@@ -49,9 +57,12 @@ public class ReadyMealController {
         }
     }
 
+
+
     public void setReadyMealDAO(ReadyMealDAO readyMealDAO) {
         this.readyMealDAO = readyMealDAO;
     }
+
 
 
 }

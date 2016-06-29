@@ -39,6 +39,11 @@ public class EmployeeController {
     }
 
     @Transactional
+    public void printAllEmployee() {
+        employeeDAO.findAll().forEach(System.out::println);
+    }
+
+    @Transactional
     public Employee getEmployeeByName(String firstName, String secondName) {
         Employee byName = null;
         try {

@@ -33,6 +33,7 @@ public class Main {
     }
 
     private void start() {
+
         startApplication();
         Scanner sc = new Scanner(System.in);
         String selection = null;
@@ -46,6 +47,7 @@ public class Main {
             stopApp = true;
             selection = "q";
         }
+
 
         while (!"q".equals(selection) && !stopApp) {
 
@@ -199,7 +201,7 @@ public class Main {
             LOGGER.error("Error wile parsing " + ex);
             System.out.println("Wrong input");
         }
-        ingredientController.getAllIngredients().forEach(System.out::println);
+        warehouseController.getAllIngredients().forEach(System.out::println);
         System.out.println("Enter ingredients. Then enter - f");
         List<Ingredient> ingredientList = new ArrayList<>();
         while (true) {
@@ -290,12 +292,13 @@ public class Main {
     }
 
     private void getAllEmployees() {
-        List<Employee> employeeList = employeeController.getAllEmployees();
-        if (employeeList != null) {
-            employeeList.forEach(System.out::println);
-        } else {
-            System.out.println("List of employee is empty");
-        }
+//        List<Employee> employeeList = employeeController.getAllEmployees();
+//        if (employeeList != null) {
+//            employeeList.forEach(System.out::println);
+//        } else {
+//            System.out.println("List of employee is empty");
+//        }
+        employeeController.printAllEmployee();
     }
 
     private void removeEmployee(Scanner sc) {
@@ -648,31 +651,37 @@ public class Main {
         showAllDishNames();
         System.out.println("Enter dish name");
         Dish dish = dishController.getDishByName(sc.next());
-        if (dish != null) {
-            readyMeal.setDishId(dish);
-            readyMeal.setDishNumber(dish.getId());
-            showAllEmplNames();
-            System.out.println("Enter employee second name");
-            String secondName = sc.next();
-            System.out.println("Enter employee first name");
-            String firstName = sc.next();
-            Employee employee = employeeController.getEmployeeByName(firstName, secondName);
-            if (employee != null) {
-                readyMeal.setEmployeeId(employee);
-                List<Order> openOrders = orderController.getOpenOrClosedOrder(OrderStatus.opened);
-                if (openOrders != null && openOrders.size() > 0) {
 
-                    for (Order openOrder : openOrders) {
-                        System.out.println("order_id " + openOrder.getId() + " ");
+        if (dish != null) {
+            if (warehouseController.validateAmount(dish.getIngredients())) {
+                readyMeal.setDishId(dish);
+
+                readyMeal.setDishNumber(dish.getId());
+                showAllEmplNames();
+                System.out.println("Enter employee second name");
+                String secondName = sc.next();
+                System.out.println("Enter employee first name");
+                String firstName = sc.next();
+                Employee employee = employeeController.getEmployeeByName(firstName, secondName);
+                if (employee != null) {
+                    readyMeal.setEmployeeId(employee);
+                    List<Order> openOrders = orderController.getOpenOrClosedOrder(OrderStatus.opened);
+                    if (openOrders != null && openOrders.size() > 0) {
+
+                        for (Order openOrder : openOrders) {
+                            System.out.println("order_id " + openOrder.getId() + " ");
+                        }
+                        System.out.println("Select order id");
+                        Order order = orderController.getOrderById(sc.nextInt());
+                        if (order != null) readyMeal.setOrderId(order);
+                        readyMeal.setMealDate(new java.sql.Date(new Date(System.currentTimeMillis()).getTime()));
+                        readyMealController.addReadyMeal(readyMeal);
+                    } else {
+                        LOGGER.info("No open orders. Cant save ready meal");
                     }
-                    System.out.println("Select order id");
-                    Order order = orderController.getOrderById(sc.nextInt());
-                    if (order != null) readyMeal.setOrderId(order);
-                    readyMeal.setMealDate(new java.sql.Date(new Date(System.currentTimeMillis()).getTime()));
-                    readyMealController.addReadyMeal(readyMeal);
-                } else {
-                    LOGGER.info("No open orders. Cant save ready meal");
                 }
+            } else {
+                System.out.println("Not enough ingredients on warehouse! Cannot create ready meal with these ingredients.");
             }
         } else {
             System.out.println("Cannot add dish with this name.");

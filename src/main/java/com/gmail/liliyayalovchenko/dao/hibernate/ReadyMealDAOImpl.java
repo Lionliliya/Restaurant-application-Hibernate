@@ -1,8 +1,10 @@
 package com.gmail.liliyayalovchenko.dao.hibernate;
 
 import com.gmail.liliyayalovchenko.dao.ReadyMealDAO;
+import com.gmail.liliyayalovchenko.domain.Ingredient;
 import com.gmail.liliyayalovchenko.domain.Order;
 import com.gmail.liliyayalovchenko.domain.ReadyMeal;
+import com.gmail.liliyayalovchenko.domain.Warehouse;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -38,6 +40,19 @@ public class ReadyMealDAOImpl implements ReadyMealDAO {
     @Transactional(propagation = Propagation.MANDATORY)
     public void addReadyMeal(ReadyMeal meal) {
         sessionFactory.getCurrentSession().save(meal);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void changeAmountOnWarehouse(Ingredient ingredient) {
+        Session session = sessionFactory.getCurrentSession();
+        org.hibernate.query.Query query = session.createQuery("select w from Warehouse w where w.ingredId = " +
+                "(select i.id from Ingredient i where i.name =:name)");
+        query.setParameter("name", ingredient.getName());
+        Warehouse warehouse = (Warehouse) query.uniqueResult();
+        int newAmount = warehouse.getAmount() - 1;
+        warehouse.setAmount(newAmount < 0 ? 0 : newAmount);
+        session.update(warehouse);
     }
 
     public void setSessionFactory(SessionFactory sessionFactory) {

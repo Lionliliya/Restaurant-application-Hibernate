@@ -96,6 +96,17 @@ public class WarehouseDAOImpl implements WarehouseDAO {
         return null != warehouse;
     }
 
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY)
+    public boolean checkAvailiability(Ingredient ingredient) {
+        Session session = sessionFactory.getCurrentSession();
+        org.hibernate.query.Query query = session.createQuery("select w.amount from Warehouse w where w.ingredId = " +
+                "(select i.id from Ingredient i where i.name =:name)");
+        query.setParameter("name", ingredient.getName());
+        int amount = (int) query.uniqueResult();
+        return amount > 0;
+    }
+
     public void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
